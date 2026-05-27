@@ -1,10 +1,10 @@
 const CACHE = 'boxing-v1';
 const ASSETS = [
-  '/index.html',
-  '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png',
-  '/apple-touch-icon.png',
+  '/boxing-program/index.html',
+  '/boxing-program/manifest.json',
+  '/boxing-program/icon-192.png',
+  '/boxing-program/icon-512.png',
+  '/boxing-program/apple-touch-icon.png',
 ];
 
 self.addEventListener('install', e => {
