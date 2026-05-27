@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
-
+ 
 <style>
 /* ─── RESET & BASE ─────────────────────────────────────────────────────────── */
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
@@ -30,14 +30,14 @@ body{
   font-size:14px; line-height:1.5; min-height:100%;
   overscroll-behavior:none; -webkit-font-smoothing:antialiased;
 }
-
+ 
 /* ─── LAYOUT ───────────────────────────────────────────────────────────────── */
 .app{
   max-width:860px; margin:0 auto;
   padding:env(safe-area-inset-top,20px) 16px calc(var(--safe-bottom) + 70px);
   min-height:100vh;
 }
-
+ 
 /* ─── HEADER ───────────────────────────────────────────────────────────────── */
 .header{text-align:center;margin-bottom:24px;padding-top:12px;}
 .header h1{font-family:var(--font-head);font-size:26px;color:var(--green);letter-spacing:-.5px;}
@@ -53,7 +53,7 @@ body{
   font-size:18px;line-height:1;padding:0 2px;
 }
 .week-badge button:hover{color:var(--text);}
-
+ 
 /* ─── BOTTOM NAV (mobile) / TOP TABS (desktop) ─────────────────────────────── */
 .tabs-bar{
   position:fixed;bottom:0;left:0;right:0;z-index:100;
@@ -68,7 +68,7 @@ body{
 }
 .tab-btn i{font-size:19px;}
 .tab-btn.active{color:var(--green);}
-
+ 
 /* Desktop: top tab bar */
 @media(min-width:600px){
   .tabs-bar{
@@ -84,7 +84,7 @@ body{
   .tab-btn.active{background:var(--surface2);border:1px solid var(--border);}
   .app{padding-bottom:20px;}
 }
-
+ 
 /* ─── DAY GRID ─────────────────────────────────────────────────────────────── */
 .day-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:10px;margin-bottom:18px;}
 .day-card{
@@ -103,14 +103,14 @@ body{
 .b-med{background:#1a2d3d;color:var(--blue);}
 .b-low{background:#2d2a10;color:var(--yellow);}
 .b-rest{background:#1a1a1f;color:var(--muted);}
-
+ 
 /* ─── DAY DETAIL ───────────────────────────────────────────────────────────── */
 .detail-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
 .detail-head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
 .detail-head .big{font-size:26px;}
 .detail-head h2{font-family:var(--font-head);font-size:18px;line-height:1.2;}
 .detail-head .dmeta{font-size:11px;color:var(--muted);margin-top:2px;}
-
+ 
 /* ─── ACCORDION ────────────────────────────────────────────────────────────── */
 .acc{border-bottom:1px solid var(--border);}
 .acc:last-child{border-bottom:none;}
@@ -127,7 +127,7 @@ body{
 .chev.open{transform:rotate(180deg);}
 .acc-body{padding:0 16px 12px;display:none;}
 .acc-body.open{display:block;}
-
+ 
 /* ─── EXERCISE ROW ─────────────────────────────────────────────────────────── */
 .ex-row{display:flex;align-items:flex-start;gap:9px;padding:8px 0;border-bottom:1px solid var(--border);}
 .ex-row:last-child{border-bottom:none;}
@@ -138,7 +138,7 @@ body{
 .prog{display:inline-block;background:var(--green-dim);color:var(--green);font-size:10px;padding:1px 6px;border-radius:8px;margin-left:5px;font-weight:600;}
 .ex-meta{font-size:12px;color:var(--muted);margin-top:2px;}
 .ex-note{font-size:11px;color:#5a8a5a;margin-top:3px;font-style:italic;line-height:1.4;}
-
+ 
 /* ─── RECOVERY TAB ─────────────────────────────────────────────────────────── */
 .bp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px;margin-bottom:18px;}
 .bp-card{
@@ -168,7 +168,7 @@ body{
 .rec-legend{display:flex;gap:14px;padding:10px 16px;border-top:1px solid var(--border);}
 .leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);}
 .leg-dot{width:7px;height:7px;border-radius:50%;}
-
+ 
 /* ─── WEIGHT TRACKER ───────────────────────────────────────────────────────── */
 .wt-wrap{margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);}
 .wt-row{display:flex;align-items:flex-end;gap:6px;flex-wrap:wrap;}
@@ -186,24 +186,24 @@ body{
 .wt-unit{font-size:11px;color:var(--muted);padding-bottom:6px;flex-shrink:0;}
 .wt-prev{font-size:10px;color:var(--muted);margin-top:5px;font-style:italic;}
 .wt-prev span{color:#4a6a4a;}
-
+ 
 /* ─── SIMPLE LIST ──────────────────────────────────────────────────────────── */
 .slist{list-style:none;}
 .slist li{display:flex;align-items:flex-start;gap:7px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
 .slist li:last-child{border-bottom:none;}
 .slist .si{color:var(--green);font-size:13px;margin-top:1px;flex-shrink:0;}
-
+ 
 /* ─── REST DAY MSG ─────────────────────────────────────────────────────────── */
 .rest-msg{padding:28px 16px;text-align:center;}
 .rest-emoji{font-size:42px;margin-bottom:10px;}
 .rest-title{font-weight:700;font-size:15px;color:var(--text);margin-bottom:8px;}
 .rest-msg p{font-size:13px;color:var(--muted);line-height:1.7;}
 .hl{color:var(--green);}
-
+ 
 /* ─── CARD ─────────────────────────────────────────────────────────────────── */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;}
 .card h3{font-size:13px;font-weight:700;color:var(--green);margin-bottom:12px;display:flex;align-items:center;gap:5px;}
-
+ 
 /* ─── DIET ─────────────────────────────────────────────────────────────────── */
 .meal-row{display:flex;justify-content:space-between;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border);}
 .meal-row:last-of-type{border-bottom:none;}
@@ -219,14 +219,14 @@ body{
 .tot{text-align:right;}
 .tot-label{font-size:10px;color:var(--muted);}
 .tot-val{font-size:16px;font-weight:700;color:var(--green);}
-
+ 
 .grocery-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
 .g-item{display:flex;justify-content:space-between;padding:7px 9px;background:var(--surface2);border-radius:6px;font-size:12px;gap:6px;align-items:center;}
 .g-price{color:var(--green);font-weight:600;flex-shrink:0;}
 .total-bar{background:var(--green-dim);border:1px solid var(--green);border-radius:8px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;margin-top:10px;}
 .total-bar span:first-child{font-size:13px;font-weight:600;}
 .total-bar span:last-child{font-size:20px;font-weight:700;color:var(--green);}
-
+ 
 /* ─── PROGRESS ─────────────────────────────────────────────────────────────── */
 .phase-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
 .phase-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:13px 14px;}
@@ -242,7 +242,7 @@ body{
 .tgt{color:var(--green);font-weight:700;}
 .pbar{height:4px;background:var(--surface2);border-radius:2px;margin-top:4px;width:90px;}
 .pbar-fill{height:4px;background:var(--green);border-radius:2px;}
-
+ 
 /* ─── REALITY ──────────────────────────────────────────────────────────────── */
 .ri{padding:13px 0;border-bottom:1px solid var(--border);}
 .ri:last-child{border-bottom:none;}
@@ -260,16 +260,16 @@ body{
 </head>
 <body>
 <div id="root"></div>
-
+ 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-
+ 
 <script>
 // ════════════════════════════════════════════════════════════════════════════
 //  ✏️  YOUR DATA — EDIT ANYTHING IN THIS SECTION
 //  Everything below the "END YOUR DATA" comment is design/app code — leave it.
 // ════════════════════════════════════════════════════════════════════════════
-
+ 
 // ── PERSONAL INFO ────────────────────────────────────────────────────────────
 const ME = {
   name: 'Braydon',
@@ -277,7 +277,7 @@ const ME = {
   age: 21,
   class: 'Heavyweight',
 };
-
+ 
 // ── PROGRAM DAYS ─────────────────────────────────────────────────────────────
 // intensity: 'high' | 'med' | 'low' | 'rest'
 // For boxing[] and cooldown[]: use { name, detail }
@@ -435,7 +435,7 @@ const DAYS = [
     warmup:[], main:[], boxing:[], cooldown:[],
   },
 ];
-
+ 
 // ── GROCERY LIST ──────────────────────────────────────────────────────────────
 const GROCERY = [
   {item:'Chicken thighs, 5 lbs',         price:'~$10'},
@@ -453,7 +453,7 @@ const GROCERY = [
   {item:'Garlic + onion',                  price:'~$3'},
 ];
 const GROCERY_TOTAL = '~$65–70';
-
+ 
 // ── MEALS ─────────────────────────────────────────────────────────────────────
 const MEALS = [
   {name:'Breakfast', time:'Morning',   desc:'1.5 cups oats + banana + 2 tbsp PB + 2 fresh eggs',               cal:700, protein:35, tip:'Prep oats dry Sunday. Add banana + PB each morning.'},
@@ -461,7 +461,7 @@ const MEALS = [
   {name:'Snack',     time:'Afternoon', desc:'200g Greek yogurt OR 2 hard-boiled eggs',                          cal:160, protein:17, tip:'Hard boil 7 eggs Sunday. Easy grab.'},
   {name:'Dinner',    time:'Evening',   desc:'200g ground beef + 200g rice + frozen veg + canned tomatoes',      cal:750, protein:48, tip:'Biggest meal. Stir fry with garlic + onion. Season well.'},
 ];
-
+ 
 // ── MEAL PREP TIPS ────────────────────────────────────────────────────────────
 const PREP_TIPS = [
   'Cook all 7 rice portions at once (rice cooker or large pot).',
@@ -472,7 +472,7 @@ const PREP_TIPS = [
   'On hard days (Mon/Thu/Fri): add extra rice or a banana.',
   '1 gallon water jug filled every single morning.',
 ];
-
+ 
 // ── TRAINING PHASES ───────────────────────────────────────────────────────────
 const PHASES = [
   {wk:'1–4',  name:'Foundation', color:'var(--blue)',   focus:'Form mastery. Light weights. Establish all movement patterns. Jab-cross only.'},
@@ -480,7 +480,7 @@ const PHASES = [
   {wk:'9–11', name:'Intensity',  color:'var(--orange)', focus:'Near-max efforts. 5+ boxing rounds full intensity. Squat 1.5×BW (~310) target.'},
   {wk:'12',   name:'Deload',     color:'var(--yellow)', focus:'40% volume cut. Retest 1RMs. Consolidate gains. Launch Cycle 2 heavier.'},
 ];
-
+ 
 // ── LIFT TARGETS (12-week) ────────────────────────────────────────────────────
 const LIFTS = [
   {name:'Bench Press',    start:'~207 lbs (BW)', target:'~207 lbs',  pct:45},
@@ -489,7 +489,7 @@ const LIFTS = [
   {name:'Overhead Press', start:'~95 lbs',         target:'~155 lbs',  pct:40},
   {name:'Pull-ups',       start:'Baseline reps',  target:'12+ reps',  pct:35},
 ];
-
+ 
 // ── NON-NEGOTIABLE RULES ──────────────────────────────────────────────────────
 const RULES = [
   {r:'Never skip rest days',       d:'Muscle grows during recovery. Skipping rest = throwing gains away.'},
@@ -499,7 +499,7 @@ const RULES = [
   {r:'Sleep 8–9 hours',            d:'5–6 hrs = ~40% drop in training effectiveness. Sleep IS the program.'},
   {r:'1 gallon water daily',       d:'Dehydration cuts strength 10%+ and kills punch speed.'},
 ];
-
+ 
 // ── RECOVERY — BODY PART REHAB ────────────────────────────────────────────────
 // Each area has: stretches[] and strength[] arrays with { name, detail }
 // warning: shown as a red note at the bottom (optional, set to null to hide)
@@ -631,20 +631,20 @@ const RECOVERY = [
     ],
   },
 ];
-
+ 
 // ════════════════════════════════════════════════════════════════════════════
 //  END YOUR DATA — don't edit below this line unless you know what you're doing
 // ════════════════════════════════════════════════════════════════════════════
-
+ 
 const {useState} = React;
-
+ 
 // ── COMPONENTS ────────────────────────────────────────────────────────────────
 const Badge = ({type}) => {
   const map = {high:['b-high','High'], med:['b-med','Medium'], low:['b-low','Low'], rest:['b-rest','Rest']};
   const [cls, label] = map[type] || map.rest;
   return React.createElement('span', {className:'badge '+cls}, label);
 };
-
+ 
 function Accordion({title, icon, defaultOpen, children}) {
   const [open, setOpen] = useState(!!defaultOpen);
   return React.createElement('div', {className:'acc'},
@@ -656,7 +656,7 @@ function Accordion({title, icon, defaultOpen, children}) {
     React.createElement('div', {className:'acc-body'+(open?' open':'')}, children)
   );
 }
-
+ 
 // Parse number of sets from strings like "4×5", "3×8–12", "4×max", "3×8/leg"
 function parseSets(setsStr) {
   if (!setsStr) return null;
@@ -665,7 +665,7 @@ function parseSets(setsStr) {
   const n = parseInt(m[1]);
   return (n >= 1 && n <= 8) ? n : null;
 }
-
+ 
 // localStorage helpers (keyed per week + day + exercise)
 function wtKey(week, dayId, exName) {
   return 'bx-w'+week+'-d'+dayId+'-'+exName.replace(/\s+/g,'_').toLowerCase();
@@ -676,7 +676,7 @@ function loadWt(key) {
 function saveWt(key, arr) {
   try { localStorage.setItem(key, JSON.stringify(arr)); } catch {}
 }
-
+ 
 function WeightTracker({exName, dayId, week, numSets}) {
   const key     = wtKey(week, dayId, exName);
   const prevKey = wtKey(week - 1, dayId, exName);
@@ -714,7 +714,7 @@ function WeightTracker({exName, dayId, week, numSets}) {
     )
   );
 }
-
+ 
 function ExRow({ex, week, dayId, trackWeight}) {
   const [done, setDone] = useState(false);
   const numSets = trackWeight ? parseSets(ex.sets) : null;
@@ -734,7 +734,7 @@ function ExRow({ex, week, dayId, trackWeight}) {
     )
   );
 }
-
+ 
 function Slist({items}) {
   return React.createElement('ul', {className:'slist'},
     items.map((it,i) => React.createElement('li', {key:i},
@@ -746,7 +746,7 @@ function Slist({items}) {
     ))
   );
 }
-
+ 
 function DayDetail({day, week}) {
   if (day.id===6) return React.createElement('div', {className:'detail-wrap'},
     React.createElement('div', {className:'rest-msg'},
@@ -783,7 +783,7 @@ function DayDetail({day, week}) {
     )
   );
 }
-
+ 
 // ── TAB VIEWS ─────────────────────────────────────────────────────────────────
 function ScheduleTab({week}) {
   const [sel, setSel] = useState(null);
@@ -803,7 +803,7 @@ function ScheduleTab({week}) {
     sel!==null && React.createElement(DayDetail, {key:sel, day:DAYS[sel], week})
   );
 }
-
+ 
 function DietTab() {
   const totalCal  = MEALS.reduce((a,m)=>a+m.cal,0);
   const totalProt = MEALS.reduce((a,m)=>a+m.protein,0);
@@ -855,7 +855,7 @@ function DietTab() {
     )
   );
 }
-
+ 
 function ProgressTab({week}) {
   const pi = week<=4?0:week<=8?1:week<=11?2:3;
   return React.createElement('div', null,
@@ -893,7 +893,7 @@ function ProgressTab({week}) {
     )
   );
 }
-
+ 
 function RealityTab() {
   return React.createElement('div', null,
     React.createElement('div', {className:'card'},
@@ -941,11 +941,11 @@ function RealityTab() {
     )
   );
 }
-
+ 
 function RecoveryTab() {
   const [sel, setSel] = useState(null);
   const area = sel !== null ? RECOVERY[sel] : null;
-
+ 
   return React.createElement('div', null,
     // intro line
     React.createElement('p', {style:{fontSize:12,color:'var(--muted)',marginBottom:14}},
@@ -963,7 +963,7 @@ function RecoveryTab() {
         React.createElement('div', {className:'bp-sub'}, bp.sub)
       ))
     ),
-
+ 
     // detail panel
     area && React.createElement('div', {className:'rec-detail', key:sel},
       React.createElement('div', {className:'rec-head'},
@@ -973,12 +973,12 @@ function RecoveryTab() {
           React.createElement('div', {className:'rh-sub'}, area.sub)
         )
       ),
-
+ 
       // warning note
       area.warning && React.createElement('div', {className:'rec-note'},
         React.createElement('strong', null, '⚠️ Program note: '), area.warning
       ),
-
+ 
       // stretches
       React.createElement(Accordion, {title:'Stretches', icon:'ti ti-arrows-move', defaultOpen:true},
         area.stretches.map((ex, i) => React.createElement('div', {key:i, className:'rec-ex'},
@@ -989,7 +989,7 @@ function RecoveryTab() {
           )
         ))
       ),
-
+ 
       // strengthening
       React.createElement(Accordion, {title:'Strengthening', icon:'ti ti-barbell', defaultOpen:true},
         area.strength.map((ex, i) => React.createElement('div', {key:i, className:'rec-ex'},
@@ -1000,7 +1000,7 @@ function RecoveryTab() {
           )
         ))
       ),
-
+ 
       // legend
       React.createElement('div', {className:'rec-legend'},
         React.createElement('div', {className:'leg-item'},
@@ -1013,7 +1013,7 @@ function RecoveryTab() {
     )
   );
 }
-
+ 
 // ── APP ────────────────────────────────────────────────────────────────────────
 const PHASE_NAMES = ['Foundation','Foundation','Foundation','Foundation','Build','Build','Build','Build','Intensity','Intensity','Intensity','Deload'];
 const PHASE_COLORS = {Foundation:'var(--blue)',Build:'var(--green)',Intensity:'var(--orange)',Deload:'var(--yellow)'};
@@ -1024,12 +1024,12 @@ const TAB_DEFS = [
   ['reality','Reality','ti ti-info-circle'],
   ['recovery','Recovery','ti ti-first-aid-kit'],
 ];
-
+ 
 function App() {
   const [tab,  setTab]  = useState('schedule');
   const [week, setWeek] = useState(1);
   const phase = PHASE_NAMES[Math.min(week-1,11)];
-
+ 
   return React.createElement('div', {className:'app'},
     React.createElement('div', {className:'header'},
       React.createElement('h1', null, '🥊 Boxing Program'),
@@ -1055,15 +1055,15 @@ function App() {
     tab==='recovery' && React.createElement(RecoveryTab,null)
   );
 }
-
+ 
 ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
 </script>
-
+ 
 <script>
 // ── SERVICE WORKER REGISTRATION ───────────────────────────────────────────────
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
+    navigator.serviceWorker.register('/boxing-program/sw.js')
       .then(r => console.log('SW registered:', r.scope))
       .catch(e => console.log('SW error:', e));
   });
