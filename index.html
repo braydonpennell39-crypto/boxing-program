@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Boxing"/>
+<meta name="theme-color" content="#0f0f11"/>
+<title>Boxing Program</title>
+<link rel="manifest" href="manifest.json"/>
+<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+
+<style>
+/* ─── RESET & BASE ─────────────────────────────────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#0f0f11; --surface:#17171a; --surface2:#1e1e22; --border:#2a2a2e;
+  --text:#e8e8ed; --muted:#8a8a9a; --green:#4ade80; --green-dim:#1a3a25;
+  --yellow:#facc15; --red:#f87171; --blue:#60a5fa; --orange:#fb923c;
+  --radius:10px; --safe-bottom:env(safe-area-inset-bottom,0px);
+  --font:'DM Sans',sans-serif; --font-head:'Playfair Display',serif;
+}
+html{height:100%;}
+body{
+  background:var(--bg); color:var(--text); font-family:var(--font);
+  font-size:14px; line-height:1.5; min-height:100%;
+  overscroll-behavior:none; -webkit-font-smoothing:antialiased;
+}
+
+/* ─── LAYOUT ───────────────────────────────────────────────────────────────── */
+.app{
+  max-width:860px; margin:0 auto;
+  padding:env(safe-area-inset-top,20px) 16px calc(var(--safe-bottom) + 70px);
+  min-height:100vh;
+}
+
+/* ─── HEADER ───────────────────────────────────────────────────────────────── */
+.header{text-align:center;margin-bottom:24px;padding-top:12px;}
+.header h1{font-family:var(--font-head);font-size:26px;color:var(--green);letter-spacing:-.5px;}
+.header .sub{color:var(--muted);font-size:12px;margin-top:3px;}
+.week-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:20px;padding:4px 14px;font-size:12px;color:var(--muted);margin-top:8px;
+}
+.week-badge .wnum{color:var(--green);font-weight:700;font-size:14px;}
+.week-badge button{
+  background:none;border:none;color:var(--muted);cursor:pointer;
+  font-size:18px;line-height:1;padding:0 2px;
+}
+.week-badge button:hover{color:var(--text);}
+
+/* ─── BOTTOM NAV (mobile) / TOP TABS (desktop) ─────────────────────────────── */
+.tabs-bar{
+  position:fixed;bottom:0;left:0;right:0;z-index:100;
+  background:var(--surface);border-top:1px solid var(--border);
+  display:flex;padding:0 8px calc(var(--safe-bottom) + 4px) 8px;
+}
+.tab-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  gap:2px;padding:7px 2px;background:none;border:none;
+  color:var(--muted);font-family:var(--font);font-size:9px;
+  font-weight:500;cursor:pointer;border-radius:8px;transition:color .15s;
+}
+.tab-btn i{font-size:19px;}
+.tab-btn.active{color:var(--green);}
+
+/* Desktop: top tab bar */
+@media(min-width:600px){
+  .tabs-bar{
+    position:static;border-top:none;border-bottom:1px solid var(--border);
+    background:var(--surface);border-radius:var(--radius);
+    margin-bottom:20px;padding:4px;gap:4px;
+  }
+  .tab-btn{
+    flex-direction:row;gap:6px;padding:9px 12px;font-size:13px;
+    border-radius:7px;
+  }
+  .tab-btn i{font-size:15px;}
+  .tab-btn.active{background:var(--surface2);border:1px solid var(--border);}
+  .app{padding-bottom:20px;}
+}
+
+/* ─── DAY GRID ─────────────────────────────────────────────────────────────── */
+.day-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:10px;margin-bottom:18px;}
+.day-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:12px 8px;cursor:pointer;
+  transition:border-color .15s;text-align:center;user-select:none;
+}
+.day-card:active{opacity:.8;}
+.day-card.selected{border-color:var(--green);background:var(--green-dim);}
+.day-card.rest-day{opacity:.55;}
+.day-icon{font-size:22px;display:block;margin-bottom:5px;}
+.day-name{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:3px;}
+.day-label{font-size:11px;font-weight:600;color:var(--text);line-height:1.3;}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;margin-top:6px;}
+.b-high{background:#3d1515;color:var(--red);}
+.b-med{background:#1a2d3d;color:var(--blue);}
+.b-low{background:#2d2a10;color:var(--yellow);}
+.b-rest{background:#1a1a1f;color:var(--muted);}
+
+/* ─── DAY DETAIL ───────────────────────────────────────────────────────────── */
+.detail-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.detail-head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.detail-head .big{font-size:26px;}
+.detail-head h2{font-family:var(--font-head);font-size:18px;line-height:1.2;}
+.detail-head .dmeta{font-size:11px;color:var(--muted);margin-top:2px;}
+
+/* ─── ACCORDION ────────────────────────────────────────────────────────────── */
+.acc{border-bottom:1px solid var(--border);}
+.acc:last-child{border-bottom:none;}
+.acc-btn{
+  width:100%;padding:11px 16px;background:none;border:none;
+  color:var(--text);font-family:var(--font);font-size:13px;font-weight:600;
+  display:flex;align-items:center;justify-content:space-between;
+  cursor:pointer;text-align:left;
+}
+.acc-btn:active{background:var(--surface2);}
+.acc-left{display:flex;align-items:center;gap:7px;}
+.acc-left i{font-size:15px;color:var(--green);}
+.chev{font-size:15px;color:var(--muted);transition:transform .2s;}
+.chev.open{transform:rotate(180deg);}
+.acc-body{padding:0 16px 12px;display:none;}
+.acc-body.open{display:block;}
+
+/* ─── EXERCISE ROW ─────────────────────────────────────────────────────────── */
+.ex-row{display:flex;align-items:flex-start;gap:9px;padding:8px 0;border-bottom:1px solid var(--border);}
+.ex-row:last-child{border-bottom:none;}
+.ex-check{margin-top:2px;width:16px;height:16px;accent-color:var(--green);cursor:pointer;flex-shrink:0;}
+.ex-info{flex:1;min-width:0;}
+.ex-name{font-weight:600;font-size:13px;}
+.ex-name.done{text-decoration:line-through;color:var(--muted);}
+.prog{display:inline-block;background:var(--green-dim);color:var(--green);font-size:10px;padding:1px 6px;border-radius:8px;margin-left:5px;font-weight:600;}
+.ex-meta{font-size:12px;color:var(--muted);margin-top:2px;}
+.ex-note{font-size:11px;color:#5a8a5a;margin-top:3px;font-style:italic;line-height:1.4;}
+
+/* ─── RECOVERY TAB ─────────────────────────────────────────────────────────── */
+.bp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px;margin-bottom:18px;}
+.bp-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:14px 8px;cursor:pointer;text-align:center;transition:border-color .15s;
+  user-select:none;
+}
+.bp-card:active{opacity:.8;}
+.bp-card.selected{border-color:var(--red);background:#2a1515;}
+.bp-emoji{font-size:24px;display:block;margin-bottom:6px;}
+.bp-name{font-size:12px;font-weight:600;color:var(--text);line-height:1.3;}
+.bp-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+.rec-detail{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.rec-head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.rec-head .rh-emoji{font-size:26px;}
+.rec-head h2{font-family:var(--font-head);font-size:18px;}
+.rec-head .rh-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.rec-ex{display:flex;align-items:flex-start;gap:8px;padding:9px 0;border-bottom:1px solid var(--border);}
+.rec-ex:last-child{border-bottom:none;}
+.rec-ex-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.rec-ex-dot.stretch{background:var(--blue);}
+.rec-ex-dot.strength{background:var(--green);}
+.rec-ex-info .re-name{font-weight:600;font-size:13px;}
+.rec-ex-info .re-detail{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.4;}
+.rec-note{background:var(--green-dim);border:1px solid var(--green);border-radius:8px;padding:10px 14px;margin:14px 16px;font-size:12px;color:var(--muted);line-height:1.6;}
+.rec-note strong{color:var(--green);}
+.rec-legend{display:flex;gap:14px;padding:10px 16px;border-top:1px solid var(--border);}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);}
+.leg-dot{width:7px;height:7px;border-radius:50%;}
+
+/* ─── WEIGHT TRACKER ───────────────────────────────────────────────────────── */
+.wt-wrap{margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);}
+.wt-row{display:flex;align-items:flex-end;gap:6px;flex-wrap:wrap;}
+.wt-set{display:flex;flex-direction:column;align-items:center;gap:3px;}
+.wt-label{font-size:10px;color:var(--muted);letter-spacing:.3px;}
+.wt-input{
+  width:56px;padding:5px 4px;background:var(--surface2);
+  border:1px solid var(--border);border-radius:6px;
+  color:var(--text);font-size:13px;font-family:var(--font);
+  text-align:center;-moz-appearance:textfield;
+}
+.wt-input::-webkit-outer-spin-button,.wt-input::-webkit-inner-spin-button{-webkit-appearance:none;}
+.wt-input:focus{outline:none;border-color:var(--green);}
+.wt-input.has-val{border-color:#2a4a35;color:var(--green);}
+.wt-unit{font-size:11px;color:var(--muted);padding-bottom:6px;flex-shrink:0;}
+.wt-prev{font-size:10px;color:var(--muted);margin-top:5px;font-style:italic;}
+.wt-prev span{color:#4a6a4a;}
+
+/* ─── SIMPLE LIST ──────────────────────────────────────────────────────────── */
+.slist{list-style:none;}
+.slist li{display:flex;align-items:flex-start;gap:7px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.slist li:last-child{border-bottom:none;}
+.slist .si{color:var(--green);font-size:13px;margin-top:1px;flex-shrink:0;}
+
+/* ─── REST DAY MSG ─────────────────────────────────────────────────────────── */
+.rest-msg{padding:28px 16px;text-align:center;}
+.rest-emoji{font-size:42px;margin-bottom:10px;}
+.rest-title{font-weight:700;font-size:15px;color:var(--text);margin-bottom:8px;}
+.rest-msg p{font-size:13px;color:var(--muted);line-height:1.7;}
+.hl{color:var(--green);}
+
+/* ─── CARD ─────────────────────────────────────────────────────────────────── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;}
+.card h3{font-size:13px;font-weight:700;color:var(--green);margin-bottom:12px;display:flex;align-items:center;gap:5px;}
+
+/* ─── DIET ─────────────────────────────────────────────────────────────────── */
+.meal-row{display:flex;justify-content:space-between;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border);}
+.meal-row:last-of-type{border-bottom:none;}
+.m-left{flex:1;min-width:0;}
+.m-name{font-weight:700;font-size:13px;}
+.m-time{color:var(--muted);font-weight:400;font-size:11px;margin-left:5px;}
+.m-desc{font-size:12px;color:var(--muted);margin-top:2px;}
+.m-tip{font-size:11px;color:#4a6a4a;margin-top:3px;font-style:italic;}
+.m-right{text-align:right;flex-shrink:0;margin-left:10px;}
+.m-cal{color:var(--green);font-weight:700;font-size:14px;}
+.m-prot{font-size:11px;color:var(--muted);margin-top:1px;}
+.totals-row{display:flex;justify-content:flex-end;gap:18px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
+.tot{text-align:right;}
+.tot-label{font-size:10px;color:var(--muted);}
+.tot-val{font-size:16px;font-weight:700;color:var(--green);}
+
+.grocery-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+.g-item{display:flex;justify-content:space-between;padding:7px 9px;background:var(--surface2);border-radius:6px;font-size:12px;gap:6px;align-items:center;}
+.g-price{color:var(--green);font-weight:600;flex-shrink:0;}
+.total-bar{background:var(--green-dim);border:1px solid var(--green);border-radius:8px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;margin-top:10px;}
+.total-bar span:first-child{font-size:13px;font-weight:600;}
+.total-bar span:last-child{font-size:20px;font-weight:700;color:var(--green);}
+
+/* ─── PROGRESS ─────────────────────────────────────────────────────────────── */
+.phase-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.phase-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:13px 14px;}
+.phase-card.cur{border-color:var(--green);}
+.ph-wk{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;}
+.ph-name{font-weight:700;font-size:14px;margin:3px 0 2px;}
+.ph-cur{font-size:10px;background:var(--green-dim);color:var(--green);display:inline-block;padding:1px 7px;border-radius:8px;margin-bottom:5px;font-weight:600;}
+.ph-focus{font-size:11px;color:var(--blue);line-height:1.45;}
+.lift-table{width:100%;border-collapse:collapse;}
+.lift-table th{text-align:left;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;padding:7px 9px;border-bottom:1px solid var(--border);}
+.lift-table td{padding:9px 9px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle;}
+.lift-table tr:last-child td{border-bottom:none;}
+.tgt{color:var(--green);font-weight:700;}
+.pbar{height:4px;background:var(--surface2);border-radius:2px;margin-top:4px;width:90px;}
+.pbar-fill{height:4px;background:var(--green);border-radius:2px;}
+
+/* ─── REALITY ──────────────────────────────────────────────────────────────── */
+.ri{padding:13px 0;border-bottom:1px solid var(--border);}
+.ri:last-child{border-bottom:none;}
+.ri-head{display:flex;align-items:center;gap:7px;margin-bottom:5px;}
+.ri-head i{font-size:17px;}
+.ri-head h3{font-weight:700;font-size:13px;}
+.ri-body{font-size:13px;color:var(--muted);line-height:1.6;}
+.rules-list{list-style:none;}
+.rules-list li{display:flex;align-items:flex-start;gap:9px;padding:9px 0;border-bottom:1px solid var(--border);}
+.rules-list li:last-child{border-bottom:none;}
+.rule-n{background:var(--green-dim);color:var(--green);font-weight:700;font-size:11px;width:21px;height:21px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.rule-t{font-weight:700;font-size:13px;}
+.rule-d{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5;}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+
+<script>
+// ════════════════════════════════════════════════════════════════════════════
+//  ✏️  YOUR DATA — EDIT ANYTHING IN THIS SECTION
+//  Everything below the "END YOUR DATA" comment is design/app code — leave it.
+// ════════════════════════════════════════════════════════════════════════════
+
+// ── PERSONAL INFO ────────────────────────────────────────────────────────────
+const ME = {
+  name: 'Braydon',
+  weight: '207 lbs',
+  age: 21,
+  class: 'Heavyweight',
+};
+
+// ── PROGRAM DAYS ─────────────────────────────────────────────────────────────
+// intensity: 'high' | 'med' | 'low' | 'rest'
+// For boxing[] and cooldown[]: use { name, detail }
+// For main[]: use { name, sets, rest, prog, note }  (prog and note are optional)
+const DAYS = [
+  {
+    id:0, name:'Monday', label:'Push + Boxing', icon:'🥊', intensity:'high', dur:'60 min',
+    warmup:[
+      {name:'Jump rope', detail:'3 min easy'},
+      {name:'Arm circles', detail:'10 each direction'},
+      {name:'DB pull-aparts', detail:'2×15, light'},
+      {name:'Slow push-up', detail:'2×8, pause at bottom'},
+      {name:'Shoulder CARs', detail:'5 each arm'},
+    ],
+    main:[
+      {name:'Bench Press', sets:'4×5', rest:'3 min', prog:'+5 lbs/wk', note:'Drive through legs. Retract scapula. Touch chest.'},
+      {name:'Overhead Press', sets:'3×8', rest:'2 min', prog:'+2.5–5/wk', note:'Brace hard. No lumbar arch. Bar in front of face on descent.'},
+      {name:'Dips', sets:'3×8–12', rest:'90 sec', prog:'+weight when 12', note:'Lean forward for chest. Controlled descent.'},
+      {name:'EZ Skullcrusher', sets:'3×10–12', rest:'60 sec', prog:'+2.5/wk', note:'Elbows in. Lower to forehead. Slow.'},
+      {name:'DB Lateral Raise', sets:'3×12–15', rest:'45 sec', prog:'+weight when 15', note:'Lead with elbows. Don\'t shrug.'},
+    ],
+    boxing:[
+      {name:'Shadow boxing', detail:'3×2 min / 30s rest — jab, cross, footwork'},
+      {name:'Jump rope intervals', detail:'3×1 min ALL OUT / 30s rest'},
+    ],
+    cooldown:[
+      {name:'Doorway chest stretch', detail:'30 sec each side'},
+      {name:'Cross-body shoulder', detail:'30 sec each arm'},
+      {name:'Overhead tricep stretch', detail:'30 sec each arm'},
+    ],
+  },
+  {
+    id:1, name:'Tuesday', label:'Pull + Conditioning', icon:'💪', intensity:'high', dur:'60 min',
+    warmup:[
+      {name:'Jump rope', detail:'3 min easy'},
+      {name:'Dead hang', detail:'30–45 sec'},
+      {name:'Cat-cow', detail:'10 reps slow'},
+      {name:'Hip circles', detail:'10 each direction'},
+      {name:'Scapular pull-ups', detail:'2×10'},
+    ],
+    main:[
+      {name:'Deadlift', sets:'4×5', rest:'3 min', prog:'+5 lbs/wk', note:'Brace before pulling. Bar against shins. Push the floor away.'},
+      {name:'Barbell Row', sets:'4×8', rest:'2 min', prog:'+5/wk', note:'45° torso. Pull to lower chest. Don\'t jerk.'},
+      {name:'Pull-ups', sets:'4×max', rest:'2 min', prog:'Add weight when 10+', note:'Full hang to chin over bar. No kipping.'},
+      {name:'EZ Bar Curl', sets:'3×10–12', rest:'60 sec', prog:'+2.5/wk', note:'No swinging. Slow 3-sec negative.'},
+      {name:'DB Rear Delt Fly', sets:'3×15', rest:'45 sec', prog:'+weight when 15', note:'Hinge 45°. Lead with elbows. Light.'},
+    ],
+    boxing:[
+      {name:'Jump rope steady state', detail:'10 min zone 2 — nose breathing only'},
+    ],
+    cooldown:[
+      {name:'Child\'s pose', detail:'45 sec, arms extended'},
+      {name:'Lat stretch against wall', detail:'30 sec each side'},
+      {name:'Bicep wall stretch', detail:'30 sec each arm'},
+      {name:'Thoracic extension over bench', detail:'60 sec'},
+    ],
+  },
+  {
+    id:2, name:'Wednesday', label:'Boxing + Core', icon:'🎯', intensity:'med', dur:'60 min',
+    warmup:[
+      {name:'Jump rope', detail:'5 min footwork focus'},
+      {name:'Neck mobility', detail:'Slow circles + nods, 2 min'},
+      {name:'Hip flexor stretch', detail:'30 sec each side'},
+      {name:'Thoracic rotation', detail:'10 each side'},
+    ],
+    main:[
+      {name:'Plank', sets:'3×45–60 sec', rest:'45 sec', prog:'+5 sec/wk', note:'Squeeze glutes and abs together. No sagging hips.'},
+      {name:'Hanging Leg Raise', sets:'3×10–15', rest:'60 sec', prog:'+1–2 reps/wk', note:'Posterior tilt at top. Full control on descent.'},
+      {name:'Russian Twist + DB', sets:'3×20', rest:'45 sec', prog:'+weight weekly', note:'Feet off floor. Rotate fully. 20 = 10 per side.'},
+      {name:'Barbell Ab Rollout', sets:'3×8–10', rest:'60 sec', prog:'+1 rep/wk', note:'From knees. Brace everything.'},
+    ],
+    boxing:[
+      {name:'Shadow boxing — footwork', detail:'4×3 min / 45s rest: Rd1 jab+angles, Rd2 add cross, Rd3 combos+head movement, Rd4 all out'},
+      {name:'Jump rope footwork drills', detail:'5×2 min: alternate feet → boxer shuffle → high knees'},
+    ],
+    cooldown:[
+      {name:'World\'s Greatest Stretch', detail:'5 each side'},
+      {name:'Pigeon pose', detail:'60 sec each side'},
+      {name:'Hamstring stretch', detail:'45 sec each side'},
+      {name:'Seated spinal twist', detail:'30 sec each side'},
+    ],
+  },
+  {
+    id:3, name:'Thursday', label:'Legs + Power', icon:'⚡', intensity:'high', dur:'60 min',
+    warmup:[
+      {name:'Jump rope', detail:'3 min moderate'},
+      {name:'Bodyweight squat', detail:'2×15 slow with pause'},
+      {name:'Hip circles', detail:'10 each leg'},
+      {name:'Leg swings', detail:'10 forward-back + 10 lateral each'},
+      {name:'Lunge with rotation', detail:'5 each side'},
+    ],
+    main:[
+      {name:'Back Squat', sets:'4×5', rest:'3 min', prog:'+5 lbs/wk', note:'Break parallel. Knees track toes. Stay braced.'},
+      {name:'Romanian Deadlift', sets:'3×10', rest:'90 sec', prog:'+5/wk', note:'Soft knee. Push hips back. Feel hamstring stretch.'},
+      {name:'Bulgarian Split Squat', sets:'3×8/leg', rest:'90 sec', prog:'+5/wk when complete', note:'Front foot far enough. Knee over mid-foot.'},
+      {name:'Box Jump / Squat Jump', sets:'4×5', rest:'90 sec', prog:'Max effort every rep', note:'Full extension at takeoff. Soft landing. Full reset.'},
+      {name:'Standing Calf Raise', sets:'4×15', rest:'45 sec', prog:'+weight when 15', note:'Full ROM. Pause at top.'},
+    ],
+    boxing:[],
+    cooldown:[
+      {name:'Kneeling hip flexor', detail:'60 sec each side'},
+      {name:'Pigeon pose', detail:'60 sec each side'},
+      {name:'Standing quad stretch', detail:'30 sec each side'},
+      {name:'Hamstring floor stretch', detail:'45 sec each side'},
+      {name:'Calf stretch against wall', detail:'30 sec each'},
+    ],
+  },
+  {
+    id:4, name:'Friday', label:'Full Body Power + Boxing', icon:'🔥', intensity:'high', dur:'60 min',
+    warmup:[
+      {name:'Jump rope', detail:'3 min building intensity'},
+      {name:'Arm circles + leg swings', detail:'10 each'},
+      {name:'Inchworm', detail:'5 reps'},
+      {name:'Power skips', detail:'2×20 yards'},
+    ],
+    main:[
+      {name:'Hang Power Clean', sets:'4×3', rest:'3 min', prog:'⚠️ START LIGHT +2.5–5/wk', note:'Empty bar first session. Hip extension drives everything. This IS punch power.'},
+      {name:'Push Press', sets:'4×5', rest:'2 min', prog:'+2.5–5/wk', note:'Dip-drive through legs. Lock out overhead. Same mechanics as punching.'},
+      {name:'Explosive Pull-up', sets:'4×6–8', rest:'2 min', prog:'+reps each week', note:'Pull as FAST as possible up. Controlled 3-sec negative. Full hang.'},
+      {name:'DB Push-up (feet elevated)', sets:'3×12–15', rest:'60 sec', prog:'+reps each week', note:'DBs give extra depth. Full extension at top.'},
+    ],
+    boxing:[
+      {name:'Shadow boxing — MAX intensity', detail:'5×2 min / 45s rest — nothing held back'},
+      {name:'Jump rope sprint', detail:'3×1 min ALL OUT / 60s rest — lactate threshold'},
+    ],
+    cooldown:[
+      {name:'Doorway chest stretch', detail:'30 sec each side'},
+      {name:'Cross-body shoulder', detail:'30 sec each arm'},
+      {name:'Kneeling hip flexor', detail:'45 sec each side'},
+      {name:'Hamstring floor stretch', detail:'45 sec each side'},
+      {name:'Deep breathing', detail:'2 min — inhale 4, hold 4, exhale 6'},
+    ],
+  },
+  {
+    id:5, name:'Saturday', label:'Conditioning + Mobility', icon:'🧘', intensity:'low', dur:'60 min',
+    warmup:[],
+    main:[
+      {name:'Jump rope steady state', sets:'15 min', rest:'—', prog:'Zone 2 — nose breathing ONLY', note:'Can\'t breathe through nose = slow down. Builds aerobic base.'},
+      {name:'Technical shadow boxing', sets:'5×3 min / 30s rest', rest:'30 sec', prog:'SLOW + perfect — zero intensity', note:'Saturday slow = Monday power. Skill gets encoded here.'},
+      {name:'Core circuit', sets:'3 rounds / 60s rest between', rest:'60 sec', prog:'Plank 45s → Side plank 30s ea → Dead bug 10', note:'Breathe through everything.'},
+    ],
+    boxing:[],
+    cooldown:[
+      {name:'Hip 90/90 stretch', detail:'60 sec each side'},
+      {name:'Thread the needle', detail:'30 sec each side'},
+      {name:'World\'s Greatest Stretch', detail:'5 each side'},
+      {name:'Couch stretch', detail:'60 sec each side'},
+      {name:'Thoracic extension over bench', detail:'60 sec'},
+      {name:'Dead hang', detail:'30–45 sec'},
+      {name:'Neck mobility', detail:'All planes, 2 min slow'},
+    ],
+  },
+  {
+    id:6, name:'Sunday', label:'Complete Rest', icon:'😴', intensity:'rest', dur:'—',
+    warmup:[], main:[], boxing:[], cooldown:[],
+  },
+];
+
+// ── GROCERY LIST ──────────────────────────────────────────────────────────────
+const GROCERY = [
+  {item:'Chicken thighs, 5 lbs',         price:'~$10'},
+  {item:'Ground beef 80/20, 3 lbs',       price:'~$12'},
+  {item:'Eggs, 2 dozen',                  price:'~$8'},
+  {item:'Greek yogurt, 32 oz',            price:'~$6'},
+  {item:'Rice, bulk (weekly)',             price:'~$2'},
+  {item:'Rolled oats (weekly)',            price:'~$1.50'},
+  {item:'Bananas',                         price:'~$3'},
+  {item:'Bread, 1 loaf',                  price:'~$4'},
+  {item:'Frozen broccoli, 2 bags',        price:'~$6'},
+  {item:'Frozen mixed veg, 2 bags',       price:'~$5'},
+  {item:'Peanut butter',                   price:'~$5'},
+  {item:'Olive oil (weekly portion)',      price:'~$2'},
+  {item:'Garlic + onion',                  price:'~$3'},
+];
+const GROCERY_TOTAL = '~$65–70';
+
+// ── MEALS ─────────────────────────────────────────────────────────────────────
+const MEALS = [
+  {name:'Breakfast', time:'Morning',   desc:'1.5 cups oats + banana + 2 tbsp PB + 2 fresh eggs',               cal:700, protein:35, tip:'Prep oats dry Sunday. Add banana + PB each morning.'},
+  {name:'Lunch',     time:'Midday',    desc:'200g chicken thigh + 200g rice + 100g broccoli',                   cal:650, protein:45, tip:'Prep 7 portions Sunday. Reheat in 2 min.'},
+  {name:'Snack',     time:'Afternoon', desc:'200g Greek yogurt OR 2 hard-boiled eggs',                          cal:160, protein:17, tip:'Hard boil 7 eggs Sunday. Easy grab.'},
+  {name:'Dinner',    time:'Evening',   desc:'200g ground beef + 200g rice + frozen veg + canned tomatoes',      cal:750, protein:48, tip:'Biggest meal. Stir fry with garlic + onion. Season well.'},
+];
+
+// ── MEAL PREP TIPS ────────────────────────────────────────────────────────────
+const PREP_TIPS = [
+  'Cook all 7 rice portions at once (rice cooker or large pot).',
+  'Bake or air-fry all chicken thighs, seasoned.',
+  'Brown all ground beef with diced onion + garlic. Portion into 7.',
+  'Hard boil 7 eggs for weekday snacks.',
+  'Pre-bag dry oat portions. Add banana + PB each morning.',
+  'On hard days (Mon/Thu/Fri): add extra rice or a banana.',
+  '1 gallon water jug filled every single morning.',
+];
+
+// ── TRAINING PHASES ───────────────────────────────────────────────────────────
+const PHASES = [
+  {wk:'1–4',  name:'Foundation', color:'var(--blue)',   focus:'Form mastery. Light weights. Establish all movement patterns. Jab-cross only.'},
+  {wk:'5–8',  name:'Build',      color:'var(--green)',  focus:'Progressive overload every week. Target: DL 1.5×BW (~310), Bench = BW (~207), Pull-ups 10+.'},
+  {wk:'9–11', name:'Intensity',  color:'var(--orange)', focus:'Near-max efforts. 5+ boxing rounds full intensity. Squat 1.5×BW (~310) target.'},
+  {wk:'12',   name:'Deload',     color:'var(--yellow)', focus:'40% volume cut. Retest 1RMs. Consolidate gains. Launch Cycle 2 heavier.'},
+];
+
+// ── LIFT TARGETS (12-week) ────────────────────────────────────────────────────
+const LIFTS = [
+  {name:'Bench Press',    start:'~207 lbs (BW)', target:'~207 lbs',  pct:45},
+  {name:'Deadlift',       start:'~225 lbs',       target:'~360 lbs',  pct:55},
+  {name:'Back Squat',     start:'~185 lbs',       target:'~310 lbs',  pct:48},
+  {name:'Overhead Press', start:'~95 lbs',         target:'~155 lbs',  pct:40},
+  {name:'Pull-ups',       start:'Baseline reps',  target:'12+ reps',  pct:35},
+];
+
+// ── NON-NEGOTIABLE RULES ──────────────────────────────────────────────────────
+const RULES = [
+  {r:'Never skip rest days',       d:'Muscle grows during recovery. Skipping rest = throwing gains away.'},
+  {r:'Don\'t add volume',          d:'The program is calibrated. Adding exercises destroys recovery.'},
+  {r:'Start power cleans LIGHT',   d:'Technique learning curve. Ego here = knee injury. Empty bar week 1.'},
+  {r:'Don\'t cut calories',        d:'You\'re at maintenance/surplus. Cutting kills gains AND boxing performance.'},
+  {r:'Sleep 8–9 hours',            d:'5–6 hrs = ~40% drop in training effectiveness. Sleep IS the program.'},
+  {r:'1 gallon water daily',       d:'Dehydration cuts strength 10%+ and kills punch speed.'},
+];
+
+// ── RECOVERY — BODY PART REHAB ────────────────────────────────────────────────
+// Each area has: stretches[] and strength[] arrays with { name, detail }
+// warning: shown as a red note at the bottom (optional, set to null to hide)
+const RECOVERY = [
+  {
+    id:'shoulder', name:'Shoulder', emoji:'🦾', sub:'Rotator cuff, front delt, impingement',
+    warning: 'Avoid overhead pressing until pain-free. Swap OHP for landmine press if needed.',
+    stretches:[
+      {name:'Cross-body shoulder stretch', detail:'Pull arm across chest. Hold 30 sec each side. Do 3 rounds.'},
+      {name:'Sleeper stretch', detail:'Lie on sore shoulder, arm at 90°. Use other hand to gently rotate forearm down. 30 sec × 3.'},
+      {name:'Doorway pec stretch', detail:'Forearm on doorframe, lean through gently. 30 sec × 3. Releases anterior capsule.'},
+      {name:'Thread the needle', detail:'On all fours, thread one arm under body and rotate. 30 sec each side.'},
+      {name:'Overhead arm circles (small)', detail:'Tiny circles, arm at 90° abduction. 20 each direction × 2.'},
+    ],
+    strength:[
+      {name:'Band external rotation', detail:'Elbow at side, 90° bent. Rotate outward against band resistance. 3×15 each. The #1 shoulder fix.'},
+      {name:'Face pull (cable or band)', detail:'Pull to nose level, elbows high. 3×20. Rebuilds posterior cuff and rear delt.'},
+      {name:'Prone Y-T-W raises', detail:'Lie face down, raise arms into Y then T then W shape. 2×8 each. Light or no weight.'},
+      {name:'Scapular push-up', detail:'In push-up position, protract and retract shoulder blades only — no arm bend. 3×10.'},
+      {name:'Side-lying external rotation', detail:'Lie on non-sore side, elbow bent 90°. Rotate top arm up slowly. 3×15. Go very light.'},
+    ],
+  },
+  {
+    id:'lower-back', name:'Lower Back', emoji:'🦴', sub:'Lumbar spine, QL, erectors',
+    warning: 'Avoid heavy deadlifts and squats until resolved. Sub Romanian DL with light goblet squat.',
+    stretches:[
+      {name:'Child\'s pose', detail:'Arms extended, hold 60 sec. Breathe into lower back. 3 rounds.'},
+      {name:'Knee-to-chest', detail:'Lying down, pull one knee into chest. 30 sec each side × 3.'},
+      {name:'Cat-cow', detail:'10 slow reps, breathe through every rep. Lubricates lumbar discs.'},
+      {name:'Piriformis stretch (figure 4)', detail:'Lying down, cross ankle over knee, pull thigh toward chest. 45 sec each side.'},
+      {name:'90-90 hip stretch', detail:'Sit on floor, both hips bent at 90°. Lean over front shin. 60 sec each side.'},
+    ],
+    strength:[
+      {name:'Dead bug', detail:'Lie on back, arms up, lower opposite arm+leg simultaneously. Keep low back FLAT. 3×10 each side.'},
+      {name:'Bird dog', detail:'On all fours, extend opposite arm+leg. Pause 3 sec at top. 3×10 each side.'},
+      {name:'Glute bridge', detail:'Feet flat, drive hips up and squeeze glutes at top. 3×15. Weak glutes = lower back pain.'},
+      {name:'Pallof press (band or cable)', detail:'Stand sideways to anchor, press band straight out and hold 3 sec. 3×10 each side.'},
+      {name:'McGill curl-up', detail:'One knee bent, hands under lower back, lift only head+shoulders. 3×8. Not a crunch.'},
+    ],
+  },
+  {
+    id:'knee', name:'Knee', emoji:'🦵', sub:'Patellar tendon, IT band, MCL/LCL',
+    warning: 'Avoid deep squats and heavy leg press until pain-free. Swap BSS for step-ups.',
+    stretches:[
+      {name:'Standing quad stretch', detail:'Pull heel to glute, keep knees together. 45 sec each side × 3.'},
+      {name:'Hamstring floor stretch', detail:'Straight leg, flex foot and lean forward. 45 sec each side × 3.'},
+      {name:'IT band stretch (standing cross)', detail:'Cross one leg behind, lean away from back leg. 30 sec each side × 3.'},
+      {name:'Calf stretch against wall', detail:'Straight and bent knee versions. 30 sec each position each leg. Relieves patellar tension.'},
+      {name:'Prone quad stretch', detail:'Lying face down, pull heel to glute with a band. 45 sec each side.'},
+    ],
+    strength:[
+      {name:'Terminal knee extension (TKE)', detail:'Band behind knee, stand facing anchor, extend knee against band. 3×15. VMO fix.'},
+      {name:'Step-up (low box)', detail:'Step up slowly, control descent. 3×12 each leg. Single-leg strength without deep flexion.'},
+      {name:'Wall sit', detail:'90° knee angle, hold 30–45 sec. 3 rounds. Isometric loading = pain relief.'},
+      {name:'Clamshell', detail:'Lie on side, knees bent, open top knee like a clamshell. 3×20. Fixes hip abductor weakness.'},
+      {name:'Single leg balance', detail:'Stand on one leg, soft knee. 60 sec each. Builds proprioception around the joint.'},
+    ],
+  },
+  {
+    id:'hip', name:'Hip / Glute', emoji:'🍑', sub:'Hip flexor, piriformis, glute medius',
+    warning: null,
+    stretches:[
+      {name:'Couch stretch', detail:'Rear foot on bench/couch, drop knee and drive hip forward. 60 sec each side. Best hip flexor stretch.'},
+      {name:'Pigeon pose', detail:'Front shin parallel to mat. Lean forward for deeper stretch. 60 sec each side.'},
+      {name:'Hip 90/90 stretch', detail:'Both hips at 90°, lean over front shin. 60 sec each side.'},
+      {name:'Figure 4 stretch', detail:'Lying down, ankle over opposite knee. Pull thigh toward chest. 45 sec each side.'},
+      {name:'Standing hip flexor lunge', detail:'Deep lunge, drive front knee over toe. 45 sec each side.'},
+    ],
+    strength:[
+      {name:'Clamshell', detail:'Side-lying, knees bent, open top knee. Add band for more resistance. 3×20.'},
+      {name:'Lateral band walk', detail:'Band around ankles, half-squat position, step side to side. 3×15 each direction.'},
+      {name:'Single-leg glute bridge', detail:'One leg up, drive other hip up. 3×15 each. Direct glute med work.'},
+      {name:'Hip thrust', detail:'Back on bench, barbell across hips. Drive hips up and squeeze hard at top. 3×12.'},
+      {name:'Single-leg RDL (light DB)', detail:'Hinge on one leg, keep back flat. 3×10 each. Glute + hip stability.'},
+    ],
+  },
+  {
+    id:'elbow', name:'Elbow / Wrist', emoji:'💪', sub:'Tennis elbow, golfer\'s elbow, wrist strain',
+    warning: 'Avoid heavy curls and pressing until pain-free. Reduce grip-intensive work.',
+    stretches:[
+      {name:'Wrist flexor stretch', detail:'Arm straight, palm up, gently pull fingers back. 30 sec each arm × 3.'},
+      {name:'Wrist extensor stretch', detail:'Arm straight, palm down, gently pull fingers down. 30 sec each arm × 3.'},
+      {name:'Forearm pronation/supination', detail:'Elbow at 90°, slowly rotate palm up and down. 20 reps × 2.'},
+      {name:'Elbow flexion/extension', detail:'Straighten and bend arm through full range, slowly. 15 reps × 2.'},
+      {name:'Prayer stretch', detail:'Palms together in front of chest, press down gently until stretch felt in forearm. 30 sec × 3.'},
+    ],
+    strength:[
+      {name:'Wrist curl (light)', detail:'Forearm on bench, palm up, curl wrist slowly. 3×15 very light. Eccentric focus.'},
+      {name:'Reverse wrist curl', detail:'Same but palm down. 3×15. Fixes lateral epicondyle issues.'},
+      {name:'Eccentric wrist extension', detail:'Use other hand to help up, lower slowly with injured arm only. 3×15. Best tendon rehab.'},
+      {name:'Finger extension with band', detail:'Loop band around fingers, open hand against resistance. 3×20. Balances flexor dominance.'},
+      {name:'Dead hang', detail:'15–30 sec. Decompresses elbow joint. Works wrist and forearm passively.'},
+    ],
+  },
+  {
+    id:'neck', name:'Neck', emoji:'🗣️', sub:'Traps, SCM, cervical spine',
+    warning: 'No heavy overhead work. Avoid behind-the-neck movements entirely.',
+    stretches:[
+      {name:'Neck side bend', detail:'Tilt ear to shoulder, hold 20 sec. Apply gentle pressure with hand. Each side × 3.'},
+      {name:'Upper trap stretch', detail:'Hold the chair seat with one hand, tilt head away and slightly forward. 30 sec each side.'},
+      {name:'Chin tuck', detail:'Gently retract chin straight back (double chin). Hold 5 sec. 3×10. Fixes forward head posture.'},
+      {name:'SCM stretch', detail:'Tilt head back and to the side. Gently pull down on collarbone area. 20 sec each side.'},
+      {name:'Neck rotation', detail:'Slowly rotate chin toward each shoulder. 10 reps each direction. Never force range.'},
+    ],
+    strength:[
+      {name:'Isometric neck press (front)', detail:'Push forehead into hand, hand resists. No movement. Hold 5 sec × 10.'},
+      {name:'Isometric neck press (sides)', detail:'Push temple into hand, resist. 5 sec × 10 each side. Builds lateral stability.'},
+      {name:'Chin tuck with resistance', detail:'Put two fingers on chin, push back while resisting with chin. 3×10.'},
+      {name:'Prone Y raise', detail:'Face down on bench, raise arms into Y. 2×10. Builds upper back to take load off neck.'},
+      {name:'Band pull-apart', detail:'Hold band at shoulder height, pull apart to T position. 3×15. Relieves neck tension.'},
+    ],
+  },
+  {
+    id:'hamstring', name:'Hamstring', emoji:'🦿', sub:'Proximal hamstring, biceps femoris',
+    warning: 'Avoid heavy RDLs and deadlifts at full range. Stay above the pain angle.',
+    stretches:[
+      {name:'Standing hamstring stretch', detail:'Foot on low surface, hinge at hip with flat back. 45 sec each side × 3.'},
+      {name:'Supine hamstring stretch', detail:'Lying down, pull leg toward ceiling with band. 45 sec each side × 3.'},
+      {name:'Seated hamstring stretch', detail:'Legs straight, flex feet, hinge forward from hips (not rounding back). 45 sec × 3.'},
+      {name:'World\'s Greatest Stretch', detail:'Deep lunge + reach. Full hip flexor and hamstring chain. 5 reps each side.'},
+      {name:'Doorway hamstring stretch', detail:'Foot in doorframe, body through, gentle passive stretch. 60 sec each.'},
+    ],
+    strength:[
+      {name:'Nordic hamstring curl', detail:'Feet anchored under bench, lower body down slowly. Even 3 negatives per set is effective. 3×5.'},
+      {name:'Single-leg RDL (light)', detail:'Hinge on one leg, keep back flat. Feel hamstring load, not stretch. 3×10 each.'},
+      {name:'Glute bridge (hamstring focus)', detail:'Feet farther from body. Squeeze hamstrings at top, not just glutes. 3×15.'},
+      {name:'Isometric hamstring hold', detail:'Leg at 30°, 60°, and 90°, press down into ground and hold 5 sec each angle × 5. Tendon loading.'},
+      {name:'Prone leg curl (light DB)', detail:'Lying face down, curl light DB between feet slowly. 3×15 with slow negative.'},
+    ],
+  },
+];
+
+// ════════════════════════════════════════════════════════════════════════════
+//  END YOUR DATA — don't edit below this line unless you know what you're doing
+// ════════════════════════════════════════════════════════════════════════════
+
+const {useState} = React;
+
+// ── COMPONENTS ────────────────────────────────────────────────────────────────
+const Badge = ({type}) => {
+  const map = {high:['b-high','High'], med:['b-med','Medium'], low:['b-low','Low'], rest:['b-rest','Rest']};
+  const [cls, label] = map[type] || map.rest;
+  return React.createElement('span', {className:'badge '+cls}, label);
+};
+
+function Accordion({title, icon, defaultOpen, children}) {
+  const [open, setOpen] = useState(!!defaultOpen);
+  return React.createElement('div', {className:'acc'},
+    React.createElement('button', {className:'acc-btn', onClick:()=>setOpen(!open)},
+      React.createElement('span', {className:'acc-left'},
+        React.createElement('i', {className:icon}), title),
+      React.createElement('i', {className:'ti ti-chevron-down chev'+(open?' open':'')})
+    ),
+    React.createElement('div', {className:'acc-body'+(open?' open':'')}, children)
+  );
+}
+
+// Parse number of sets from strings like "4×5", "3×8–12", "4×max", "3×8/leg"
+function parseSets(setsStr) {
+  if (!setsStr) return null;
+  const m = String(setsStr).match(/^(\d+)[×x]/);
+  if (!m) return null;
+  const n = parseInt(m[1]);
+  return (n >= 1 && n <= 8) ? n : null;
+}
+
+// localStorage helpers (keyed per week + day + exercise)
+function wtKey(week, dayId, exName) {
+  return 'bx-w'+week+'-d'+dayId+'-'+exName.replace(/\s+/g,'_').toLowerCase();
+}
+function loadWt(key) {
+  try { return JSON.parse(localStorage.getItem(key)) || []; } catch { return []; }
+}
+function saveWt(key, arr) {
+  try { localStorage.setItem(key, JSON.stringify(arr)); } catch {}
+}
+
+function WeightTracker({exName, dayId, week, numSets}) {
+  const key     = wtKey(week, dayId, exName);
+  const prevKey = wtKey(week - 1, dayId, exName);
+  const prev    = loadWt(prevKey);
+  const [weights, setWeights] = useState(() => {
+    const saved = loadWt(key);
+    return Array.from({length: numSets}, (_, i) => saved[i] || '');
+  });
+  const update = (i, val) => {
+    const next = [...weights];
+    next[i] = val;
+    setWeights(next);
+    saveWt(key, next);
+  };
+  const hasPrev = prev.some(v => v !== '' && v != null);
+  return React.createElement('div', {className:'wt-wrap'},
+    React.createElement('div', {className:'wt-row'},
+      Array.from({length: numSets}, (_, i) =>
+        React.createElement('div', {key:i, className:'wt-set'},
+          React.createElement('div', {className:'wt-label'}, 'S'+(i+1)),
+          React.createElement('input', {
+            type:'number', inputMode:'numeric', className:'wt-input'+(weights[i]?' has-val':''),
+            value: weights[i], placeholder: prev[i] || '—',
+            onChange: e => update(i, e.target.value)
+          })
+        )
+      ),
+      React.createElement('div', {className:'wt-unit'}, 'lbs')
+    ),
+    hasPrev && React.createElement('div', {className:'wt-prev'},
+      'Last week: ',
+      React.createElement('span', null,
+        prev.filter(v=>v).map((v,i)=>'S'+(i+1)+': '+v+'lbs').join(' · ')
+      )
+    )
+  );
+}
+
+function ExRow({ex, week, dayId, trackWeight}) {
+  const [done, setDone] = useState(false);
+  const numSets = trackWeight ? parseSets(ex.sets) : null;
+  return React.createElement('div', {className:'ex-row'},
+    React.createElement('input', {type:'checkbox', className:'ex-check', checked:done, onChange:()=>setDone(!done)}),
+    React.createElement('div', {className:'ex-info'},
+      React.createElement('div', {className:'ex-name'+(done?' done':'')},
+        ex.name,
+        ex.prog && React.createElement('span', {className:'prog'}, ex.prog)
+      ),
+      React.createElement('div', {className:'ex-meta'},
+        (ex.sets||ex.detail||''),
+        ex.rest && ex.rest!=='—' ? ' — rest '+ex.rest : ''
+      ),
+      ex.note && React.createElement('div', {className:'ex-note'}, ex.note),
+      numSets && React.createElement(WeightTracker, {exName:ex.name, dayId, week, numSets})
+    )
+  );
+}
+
+function Slist({items}) {
+  return React.createElement('ul', {className:'slist'},
+    items.map((it,i) => React.createElement('li', {key:i},
+      React.createElement('i', {className:'ti ti-circle-check si'}),
+      React.createElement('span', null,
+        React.createElement('strong', null, it.name||it),
+        it.detail ? React.createElement('span', {style:{color:'var(--muted)',marginLeft:5}}, it.detail) : null
+      )
+    ))
+  );
+}
+
+function DayDetail({day, week}) {
+  if (day.id===6) return React.createElement('div', {className:'detail-wrap'},
+    React.createElement('div', {className:'rest-msg'},
+      React.createElement('div', {className:'rest-emoji'}, '😴'),
+      React.createElement('div', {className:'rest-title'}, 'Complete Rest Day'),
+      React.createElement('p', null,
+        'Recovery is when adaptation happens. ',
+        React.createElement('span', {className:'hl'}, 'This is not optional.'), React.createElement('br',null),
+        'Sleep 8–9 hours. Light walk is fine. Today is meal prep day.', React.createElement('br',null),
+        React.createElement('span', {className:'hl'}, 'Sunday = most important day of the week.')
+      )
+    )
+  );
+  const imap = {high:'🔴 High', med:'🟡 Medium', low:'🟢 Low'};
+  return React.createElement('div', {className:'detail-wrap'},
+    React.createElement('div', {className:'detail-head'},
+      React.createElement('span', {className:'big'}, day.icon),
+      React.createElement('div', null,
+        React.createElement('h2', null, day.name+' — '+day.label),
+        React.createElement('div', {className:'dmeta'}, day.dur+' · Intensity: '+(imap[day.intensity]||''))
+      )
+    ),
+    day.warmup.length>0 && React.createElement(Accordion, {title:'Warm-Up', icon:'ti ti-flame', defaultOpen:true},
+      React.createElement(Slist, {items:day.warmup})
+    ),
+    day.main.length>0 && React.createElement(Accordion, {title:day.id===5?'Workout':'Main Lifts', icon:'ti ti-barbell', defaultOpen:true},
+      day.main.map((ex,i)=>React.createElement(ExRow,{key:i, ex, week, dayId:day.id, trackWeight:true}))
+    ),
+    day.boxing.length>0 && React.createElement(Accordion, {title:'Boxing / Conditioning', icon:'ti ti-run', defaultOpen:true},
+      day.boxing.map((ex,i)=>React.createElement(ExRow,{key:i, ex, week, dayId:day.id, trackWeight:false}))
+    ),
+    day.cooldown.length>0 && React.createElement(Accordion, {title:'Cooldown & Stretch', icon:'ti ti-heart-rate-monitor'},
+      React.createElement(Slist, {items:day.cooldown})
+    )
+  );
+}
+
+// ── TAB VIEWS ─────────────────────────────────────────────────────────────────
+function ScheduleTab({week}) {
+  const [sel, setSel] = useState(null);
+  return React.createElement('div', null,
+    React.createElement('div', {className:'day-grid'},
+      DAYS.map(d=>React.createElement('div', {
+        key:d.id,
+        className:'day-card'+(d.intensity==='rest'?' rest-day':'')+(sel===d.id?' selected':''),
+        onClick:()=>setSel(sel===d.id?null:d.id)
+      },
+        React.createElement('span',{className:'day-icon'},d.icon),
+        React.createElement('div',{className:'day-name'},d.name),
+        React.createElement('div',{className:'day-label'},d.label),
+        React.createElement(Badge,{type:d.intensity})
+      ))
+    ),
+    sel!==null && React.createElement(DayDetail, {key:sel, day:DAYS[sel], week})
+  );
+}
+
+function DietTab() {
+  const totalCal  = MEALS.reduce((a,m)=>a+m.cal,0);
+  const totalProt = MEALS.reduce((a,m)=>a+m.protein,0);
+  return React.createElement('div', null,
+    React.createElement('div', {className:'card'},
+      React.createElement('h3', null, React.createElement('i',{className:'ti ti-tools-kitchen-2'}), ' Daily Meals'),
+      MEALS.map((m,i)=>React.createElement('div',{key:i,className:'meal-row'},
+        React.createElement('div',{className:'m-left'},
+          React.createElement('div',{className:'m-name'}, m.name, React.createElement('span',{className:'m-time'},'· '+m.time)),
+          React.createElement('div',{className:'m-desc'},m.desc),
+          React.createElement('div',{className:'m-tip'},m.tip)
+        ),
+        React.createElement('div',{className:'m-right'},
+          React.createElement('div',{className:'m-cal'},m.cal+' cal'),
+          React.createElement('div',{className:'m-prot'},m.protein+'g protein')
+        )
+      )),
+      React.createElement('div',{className:'totals-row'},
+        React.createElement('div',{className:'tot'},
+          React.createElement('div',{className:'tot-label'},'Daily Calories'),
+          React.createElement('div',{className:'tot-val'},totalCal)
+        ),
+        React.createElement('div',{className:'tot'},
+          React.createElement('div',{className:'tot-label'},'Daily Protein'),
+          React.createElement('div',{className:'tot-val'},totalProt+'g')
+        )
+      )
+    ),
+    React.createElement('div', {className:'card'},
+      React.createElement('h3', null, React.createElement('i',{className:'ti ti-shopping-cart'}), ' Weekly Grocery List'),
+      React.createElement('div', {className:'grocery-grid'},
+        GROCERY.map((g,i)=>React.createElement('div',{key:i,className:'g-item'},
+          React.createElement('span',null,g.item),
+          React.createElement('span',{className:'g-price'},g.price)
+        ))
+      ),
+      React.createElement('div',{className:'total-bar'},
+        React.createElement('span',null,'📦 Weekly total'),
+        React.createElement('span',null,GROCERY_TOTAL)
+      )
+    ),
+    React.createElement('div', {className:'card'},
+      React.createElement('h3', null, React.createElement('i',{className:'ti ti-clock'}), ' Sunday Meal Prep'),
+      React.createElement('ul', {className:'slist'},
+        PREP_TIPS.map((t,i)=>React.createElement('li',{key:i},
+          React.createElement('i',{className:'ti ti-circle-check si'}), t
+        ))
+      )
+    )
+  );
+}
+
+function ProgressTab({week}) {
+  const pi = week<=4?0:week<=8?1:week<=11?2:3;
+  return React.createElement('div', null,
+    React.createElement('div', {className:'phase-grid'},
+      PHASES.map((p,i)=>React.createElement('div',{key:i,className:'phase-card'+(i===pi?' cur':'')},
+        React.createElement('div',{className:'ph-wk'},'Week '+p.wk),
+        React.createElement('div',{className:'ph-name',style:{color:p.color}},p.name),
+        i===pi && React.createElement('div',{className:'ph-cur'},'▶ CURRENT'),
+        React.createElement('div',{className:'ph-focus'},p.focus)
+      ))
+    ),
+    React.createElement('div', {className:'card'},
+      React.createElement('h3', null, React.createElement('i',{className:'ti ti-target'}), ' 12-Week Targets'),
+      React.createElement('table', {className:'lift-table'},
+        React.createElement('thead', null,
+          React.createElement('tr', null,
+            React.createElement('th',null,'Lift'),
+            React.createElement('th',null,'Start'),
+            React.createElement('th',null,'Target')
+          )
+        ),
+        React.createElement('tbody', null,
+          LIFTS.map((l,i)=>React.createElement('tr',{key:i},
+            React.createElement('td',null,React.createElement('strong',null,l.name)),
+            React.createElement('td',{style:{color:'var(--muted)'}},l.start),
+            React.createElement('td',null,
+              React.createElement('span',{className:'tgt'},l.target),
+              React.createElement('div',{className:'pbar'},
+                React.createElement('div',{className:'pbar-fill',style:{width:l.pct+'%'}})
+              )
+            )
+          ))
+        )
+      )
+    )
+  );
+}
+
+function RealityTab() {
+  return React.createElement('div', null,
+    React.createElement('div', {className:'card'},
+      React.createElement('h3', null, React.createElement('i',{className:'ti ti-info-circle'}), ' Your Actual Timeline'),
+      [
+        {icon:'ti ti-trending-up', c:'var(--green)', title:'220 lbs lean (10% BF)',
+         body:['Requires ~', React.createElement('span',{className:'hl'},'28–33 lbs of muscle'), ' on top of your current ~165–170 lbs lean mass. Optimal rate with consistency: ', React.createElement('span',{className:'hl'},'2–4 years'), '. Realistic. Stay focused here.']},
+        {icon:'ti ti-clock', c:'var(--yellow)', title:'240 lbs lean',
+         body:['Elite natural territory. ', React.createElement('span',{className:'hl'},'5–10+ years of consistent training'), '. Don\'t think about this yet — execute the 12-week cycle.']},
+        {icon:'ti ti-bolt', c:'var(--blue)', title:'Your Biggest Advantage',
+         body:['You\'re 21. Hormones optimal. Recovery fast. ', React.createElement('span',{className:'hl'},'You will never have a better window than right now'), '. Consistency this year compounds for a decade.']},
+      ].map((item,i)=>React.createElement('div',{key:i,className:'ri'},
+        React.createElement('div',{className:'ri-head'},
+          React.createElement('i',{className:item.icon,style:{color:item.c}}),
+          React.createElement('h3',null,item.title)
+        ),
+        React.createElement('div',{className:'ri-body'}, ...item.body)
+      ))
+    ),
+    React.createElement('div', {className:'card'},
+      React.createElement('h3', null, React.createElement('i',{className:'ti ti-lock'}), ' Non-Negotiable Rules'),
+      React.createElement('ul', {className:'rules-list'},
+        RULES.map((r,i)=>React.createElement('li',{key:i},
+          React.createElement('div',{className:'rule-n'},i+1),
+          React.createElement('div',null,
+            React.createElement('div',{className:'rule-t'},r.r),
+            React.createElement('div',{className:'rule-d'},r.d)
+          )
+        ))
+      )
+    ),
+    React.createElement('div', {className:'card'},
+      React.createElement('h3', null, React.createElement('i',{className:'ti ti-activity'}), ' Boxing Notes'),
+      React.createElement('ul', {className:'slist'},
+        [
+          'Stretching is mandatory — tight pecs restrict punch extension directly.',
+          'Saturday slow technical boxing is where SKILL gets locked in.',
+          'At 207+ lbs you\'re heavyweight. This program builds exactly the right body.',
+          'Get a heavy bag ASAP. Replace some shadow work once you have it.',
+          'Punch power = leg drive + hip rotation + core transfer. The lifts ARE boxing.',
+        ].map((n,i)=>React.createElement('li',{key:i},
+          React.createElement('i',{className:'ti ti-circle-check si'}), n
+        ))
+      )
+    )
+  );
+}
+
+function RecoveryTab() {
+  const [sel, setSel] = useState(null);
+  const area = sel !== null ? RECOVERY[sel] : null;
+
+  return React.createElement('div', null,
+    // intro line
+    React.createElement('p', {style:{fontSize:12,color:'var(--muted)',marginBottom:14}},
+      'Tap a body part that\'s giving you trouble to get targeted stretches and strengthening work.'
+    ),
+    // body part grid
+    React.createElement('div', {className:'bp-grid'},
+      RECOVERY.map((bp, i) => React.createElement('div', {
+        key: bp.id,
+        className: 'bp-card' + (sel === i ? ' selected' : ''),
+        onClick: () => setSel(sel === i ? null : i)
+      },
+        React.createElement('span', {className:'bp-emoji'}, bp.emoji),
+        React.createElement('div', {className:'bp-name'}, bp.name),
+        React.createElement('div', {className:'bp-sub'}, bp.sub)
+      ))
+    ),
+
+    // detail panel
+    area && React.createElement('div', {className:'rec-detail', key:sel},
+      React.createElement('div', {className:'rec-head'},
+        React.createElement('span', {className:'rh-emoji'}, area.emoji),
+        React.createElement('div', null,
+          React.createElement('h2', null, area.name + ' Recovery'),
+          React.createElement('div', {className:'rh-sub'}, area.sub)
+        )
+      ),
+
+      // warning note
+      area.warning && React.createElement('div', {className:'rec-note'},
+        React.createElement('strong', null, '⚠️ Program note: '), area.warning
+      ),
+
+      // stretches
+      React.createElement(Accordion, {title:'Stretches', icon:'ti ti-arrows-move', defaultOpen:true},
+        area.stretches.map((ex, i) => React.createElement('div', {key:i, className:'rec-ex'},
+          React.createElement('div', {className:'rec-ex-dot stretch'}),
+          React.createElement('div', {className:'rec-ex-info'},
+            React.createElement('div', {className:'re-name'}, ex.name),
+            React.createElement('div', {className:'re-detail'}, ex.detail)
+          )
+        ))
+      ),
+
+      // strengthening
+      React.createElement(Accordion, {title:'Strengthening', icon:'ti ti-barbell', defaultOpen:true},
+        area.strength.map((ex, i) => React.createElement('div', {key:i, className:'rec-ex'},
+          React.createElement('div', {className:'rec-ex-dot strength'}),
+          React.createElement('div', {className:'rec-ex-info'},
+            React.createElement('div', {className:'re-name'}, ex.name),
+            React.createElement('div', {className:'re-detail'}, ex.detail)
+          )
+        ))
+      ),
+
+      // legend
+      React.createElement('div', {className:'rec-legend'},
+        React.createElement('div', {className:'leg-item'},
+          React.createElement('div', {className:'leg-dot', style:{background:'var(--blue)'}}), 'Stretch'
+        ),
+        React.createElement('div', {className:'leg-item'},
+          React.createElement('div', {className:'leg-dot', style:{background:'var(--green)'}}), 'Strengthen'
+        )
+      )
+    )
+  );
+}
+
+// ── APP ────────────────────────────────────────────────────────────────────────
+const PHASE_NAMES = ['Foundation','Foundation','Foundation','Foundation','Build','Build','Build','Build','Intensity','Intensity','Intensity','Deload'];
+const PHASE_COLORS = {Foundation:'var(--blue)',Build:'var(--green)',Intensity:'var(--orange)',Deload:'var(--yellow)'};
+const TAB_DEFS = [
+  ['schedule','Schedule','ti ti-calendar'],
+  ['diet','Diet','ti ti-salad'],
+  ['progress','Progress','ti ti-chart-bar'],
+  ['reality','Reality','ti ti-info-circle'],
+  ['recovery','Recovery','ti ti-first-aid-kit'],
+];
+
+function App() {
+  const [tab,  setTab]  = useState('schedule');
+  const [week, setWeek] = useState(1);
+  const phase = PHASE_NAMES[Math.min(week-1,11)];
+
+  return React.createElement('div', {className:'app'},
+    React.createElement('div', {className:'header'},
+      React.createElement('h1', null, '🥊 Boxing Program'),
+      React.createElement('p', {className:'sub'}, ME.name+' · '+ME.weight+' · Age '+ME.age+' · '+ME.class),
+      React.createElement('div', {className:'week-badge'},
+        React.createElement('button', {onClick:()=>setWeek(Math.max(1,week-1))}, '‹'),
+        'Week ', React.createElement('span',{className:'wnum'},week), ' / 12 · ',
+        React.createElement('span',{style:{color:PHASE_COLORS[phase],fontWeight:600}},phase),
+        React.createElement('button',{onClick:()=>setWeek(Math.min(12,week+1))}, '›')
+      )
+    ),
+    React.createElement('div', {className:'tabs-bar'},
+      TAB_DEFS.map(([id,label,icon])=>React.createElement('button',{
+        key:id, className:'tab-btn'+(tab===id?' active':''), onClick:()=>setTab(id)
+      },
+        React.createElement('i',{className:icon}), label
+      ))
+    ),
+    tab==='schedule' && React.createElement(ScheduleTab,{week}),
+    tab==='diet'     && React.createElement(DietTab,null),
+    tab==='progress' && React.createElement(ProgressTab,{week}),
+    tab==='reality'  && React.createElement(RealityTab,null),
+    tab==='recovery' && React.createElement(RecoveryTab,null)
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
+</script>
+
+<script>
+// ── SERVICE WORKER REGISTRATION ───────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(r => console.log('SW registered:', r.scope))
+      .catch(e => console.log('SW error:', e));
+  });
+}
+</script>
+</body>
+</html>
